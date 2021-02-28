@@ -20,13 +20,18 @@ To avoid duplication of information please read https://en.wikipedia.org/wiki/Cr
 * Nonstandard predefined scheduling definitions i.e. @yearly, @monthly, etc
 * Non-Numeric Ranges for days of the week i.e. `L-F` or months i.e. `JAN–DEC`
 
-## How to run program
+## Usage
 
 ### Pre-requisites
 * Install https://brew.sh to easy manage mac or linux binaries
 * once you have brew installed execute `brew install java`
 * clone repository as it's not available in any artifact manager
 
+### How to run application
 In order to run script you need to compile it first to do so you should run `./gradlew clean build`
 
 Then to run the command the executable you should run `java -jar build/libs/cron-parser-1.0.jar "*/15 0 1,15 * 1-5 /usr/bin/find"`
+
+### How to run tests
+
+`./gadlew clean build` will run all the tests in the terminal
