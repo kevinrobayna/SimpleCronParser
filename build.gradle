@@ -1,13 +1,26 @@
 plugins {
-    id 'java'
+    id "java"
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'com.github.kevinrobayna.cron'
+version '1.0'
 
 repositories {
     mavenCentral()
 }
+
+ext {
+    javaMainClass = "com.github.kevinrobayna.CronParser"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": javaMainClass
+        )
+    }
+}
+
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
