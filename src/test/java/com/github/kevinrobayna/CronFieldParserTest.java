@@ -73,6 +73,13 @@ class CronFieldParserTest {
     }
 
     @Test
+    public void testRangeWithDaysOfTheWeekInString() {
+        var result = CronFieldParser.parse("MON-FRI", CronFieldParser.CronField.DAY_OF_WEEK);
+
+        Assertions.assertEquals(List.of("1", "2", "3", "4", "5"), result);
+    }
+
+    @Test
     public void testListOfCommaSeparatedValues() {
         var result = CronFieldParser.parse("0,1,2,3,4,5", CronFieldParser.CronField.MONTH);
 
