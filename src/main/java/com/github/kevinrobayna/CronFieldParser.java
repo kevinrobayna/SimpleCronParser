@@ -47,7 +47,12 @@ class CronFieldParser {
     private final static String STEP = "/";
 
     static List<String> parse(String fieldSource, CronField field) {
-        if (fieldSource.equals(ALL)) {
+        if (isComplexStepBy(fieldSource)) {
+            var expression = fieldSource.split(STEP);
+            var firstRange = parse(expression[0], field);
+            var secondRange = parse(expression[1], field);
+            return firstRange.stream().filter(it -> parseInt(it) % parseInt(secondRange.get(0)) == 0).collect(Collectors.toList());
+        } else if (fieldSource.equals(ALL)) {
             return fieldToStream(field)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.toList());
@@ -80,6 +85,10 @@ class CronFieldParser {
                     .collect(Collectors.toList());
         }
         return List.of();
+    }
+
+    private static boolean isComplexStepBy(String fieldSource) {
+        return fieldSource.contains(STEP) && (fieldSource.contains(RANGE) || fieldSource.contains(ALL) || fieldSource.contains(LIST));
     }
 
     private static boolean isStep(String fieldSource) {

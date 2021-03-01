@@ -10,6 +10,13 @@ import java.util.stream.IntStream;
 class CronFieldParserTest {
 
     @Test
+    public void testComplexStepByWithRange() {
+        var result = CronFieldParser.parse("0-10/2", CronFieldParser.CronField.MINUTE);
+
+        Assertions.assertEquals(List.of("0", "2", "4", "6", "8", "10"), result);
+    }
+
+    @Test
     public void testWildCarForMinuteReturnsExpectedRange() {
         var result = CronFieldParser.parse("*", CronFieldParser.CronField.MINUTE);
 
