@@ -13,7 +13,7 @@ public class CronParser {
     private static final int DAYS_OF_WEEK = 4;
 
     static CronExpression parse(String cronExpression) {
-        var splitExpression = cronExpression.split(" ");
+        var splitExpression = cronExpression.split((" +"));
         var minutes = parseMinutes(splitExpression[MINUTES]);
         var hours = parseHours(splitExpression[HOURS]);
         var daysOfMonth = parseDaysOfMonth(splitExpression[DAYS_OF_MONTH]);

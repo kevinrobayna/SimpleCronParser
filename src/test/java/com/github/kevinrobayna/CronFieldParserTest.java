@@ -10,6 +10,13 @@ import java.util.stream.IntStream;
 class CronFieldParserTest {
 
     @Test
+    public void testComplexStepByWithRange() {
+        var result = CronFieldParser.parse("0-10/2", CronFieldParser.CronField.MINUTE);
+
+        Assertions.assertEquals(List.of("0", "2", "4", "6", "8", "10"), result);
+    }
+
+    @Test
     public void testWildCarForMinuteReturnsExpectedRange() {
         var result = CronFieldParser.parse("*", CronFieldParser.CronField.MINUTE);
 
@@ -70,6 +77,13 @@ class CronFieldParserTest {
         var result = CronFieldParser.parse("?-?", CronFieldParser.CronField.MONTH);
 
         Assertions.assertEquals(List.of("0"), result);
+    }
+
+    @Test
+    public void testRangeWithDaysOfTheWeekInString() {
+        var result = CronFieldParser.parse("MON-FRI", CronFieldParser.CronField.DAY_OF_WEEK);
+
+        Assertions.assertEquals(List.of("1", "2", "3", "4", "5"), result);
     }
 
     @Test

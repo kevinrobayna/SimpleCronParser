@@ -15,13 +15,44 @@ class CronFieldParser {
         DAY_OF_MONTH
     }
 
+    enum DayOfWeek {
+        SUN(0),
+        MON(1),
+        TUE(2),
+        WED(3),
+        TRU(4),
+        FRI(5),
+        SAT(6);
+
+        private int number;
+
+        DayOfWeek(int number) {
+            this.number = number;
+        }
+
+        public static DayOfWeek fromDayOfWeek(String dayOfWeek) {
+            var result = Arrays.stream(DayOfWeek.values()).filter(day -> day.name().equals(dayOfWeek)).findFirst();
+            if (result.isEmpty()) {
+                throw new IllegalArgumentException("Unsupported day of the week");
+            } else {
+                return result.get();
+            }
+        }
+
+    }
+
     private final static String ALL = "*";
     private final static String RANGE = "-";
     private final static String LIST = ",";
     private final static String STEP = "/";
 
     static List<String> parse(String fieldSource, CronField field) {
-        if (fieldSource.equals(ALL)) {
+        if (isComplexStepBy(fieldSource)) {
+            var expression = fieldSource.split(STEP);
+            var firstRange = parse(expression[0], field);
+            var secondRange = parse(expression[1], field);
+            return firstRange.stream().filter(it -> parseInt(it) % parseInt(secondRange.get(0)) == 0).collect(Collectors.toList());
+        } else if (fieldSource.equals(ALL)) {
             return fieldToStream(field)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.toList());
@@ -29,6 +60,14 @@ class CronFieldParser {
             return List.of(fieldSource);
         } else if (isRange(fieldSource)) {
             var range = fieldSource.split(RANGE);
+            if (field == CronField.DAY_OF_WEEK) {
+                var start = DayOfWeek.fromDayOfWeek(range[0]).number;
+                var end = DayOfWeek.fromDayOfWeek(range[1]).number;
+                return IntStream
+                        .rangeClosed(start, end)
+                        .mapToObj(String::valueOf)
+                        .collect(Collectors.toList());
+            }
             return IntStream
                     .rangeClosed(parseInt(range[0]), parseInt(range[1]))
                     .mapToObj(String::valueOf)
@@ -46,6 +85,10 @@ class CronFieldParser {
                     .collect(Collectors.toList());
         }
         return List.of();
+    }
+
+    private static boolean isComplexStepBy(String fieldSource) {
+        return fieldSource.contains(STEP) && (fieldSource.contains(RANGE) || fieldSource.contains(ALL) || fieldSource.contains(LIST));
     }
 
     private static boolean isStep(String fieldSource) {
